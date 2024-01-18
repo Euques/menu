@@ -1,17 +1,18 @@
 // Configurar as credenciais do Firebase
 const firebaseConfig = {
-   apiKey: "AIzaSyCLEyAd_4-2n2ID0xTjwS1ouip9G9C6JDs",
-            authDomain: "blacknight-600de.firebaseapp.com",
-            databaseURL: "https://blacknight-600de.firebaseio.com",
-            projectId: "blacknight-600de",
-            storageBucket: "blacknight-600de.appspot.com",
-            messagingSenderId: "588926432348",
-            appId: "1:588926432348:web:47b2b4a1b421d4b2a0e299",
-            measurementId: "G-559VYPVJ5Q"
+    apiKey: "AIzaSyCLEyAd_4-2n2ID0xTjwS1ouip9G9C6JDs",
+    authDomain: "blacknight-600de.firebaseapp.com",
+    databaseURL: "https://blacknight-600de.firebaseio.com",
+    projectId: "blacknight-600de",
+    storageBucket: "blacknight-600de.appspot.com",
+    messagingSenderId: "588926432348",
+    appId: "1:588926432348:web:47b2b4a1b421d4b2a0e299",
+    measurementId: "G-559VYPVJ5Q"
 };
 
 // Inicializar o Firebase
 firebase.initializeApp(firebaseConfig);
+
 
 // Referência ao banco de dados
 const database = firebase.database();
