@@ -1,55 +1,58 @@
-// Restante do seu código...
+// ... (código anterior) ...
 
-// Lógica para exibir a lista de produtos na página
-function displayProductList(productList) {
-    const productListContainer = $('#product-list');
-    productListContainer.empty();
+// Lógica para carregar a lista de categorias usando Realtime Database
+function loadCategoryList() {
+    const categoriesRef = database.ref('categories');
 
-    productList.forEach(product => {
-        const cardHTML = `
-            <div class="card">
-                <img src="${product.image || 'https://via.placeholder.com/150'}" class="card-img-top" alt="Imagem do Produto">
-                <div class="card-body">
-                    <h5 class="card-title">${product.name}</h5>
-                    <p class="card-text">${product.description}</p>
-                    <p class="card-text"><strong>Categoria:</strong> ${product.category}</p>
-                    <p class="card-text"><strong>Preço:</strong> $${product.price.toFixed(2)}</p>
-                </div>
-            </div>
-        `;
-        productListContainer.append(cardHTML);
+    categoriesRef.once('value').then(snapshot => {
+        const categories = [];
+        snapshot.forEach(childSnapshot => {
+            const category = childSnapshot.val();
+            categories.push(category);
+        });
+
+        displayCategoryList(categories);
     });
 }
 
-// Lógica para exibir os detalhes do produto na página
-function showProductDetails(productName) {
-    // Crie uma referência para o produto específico no Realtime Database
-    const productRef = database.ref(`products/${productName}`);
+// Lógica para exibir a lista de categorias na página
+function displayCategoryList(categories) {
+    const categoryListContainer = $('#category-list');
+    const categoryHTML = '<ul class="list-group">';
+    categories.forEach(category => {
+        categoryHTML += `<li class="list-group-item">${category.name}</li>`;
+    });
+    categoryHTML += '</ul>';
+    categoryListContainer.html(categoryHTML);
 
-    // Obter os detalhes do produto
-    productRef.once('value').then(snapshot => {
-        const product = snapshot.val();
-
-        // Atualizar os detalhes do produto na página
-        displayProductDetails(product);
+    // Atualizar o dropdown de categorias no formulário de adição de produtos
+    const categorySelect = $('#productCategory');
+    categorySelect.empty();
+    categorySelect.append('<option value="" selected>Selecione uma categoria</option>');
+    categories.forEach(category => {
+        categorySelect.append(`<option value="${category.name}">${category.name}</option>`);
     });
 }
 
-// Lógica para exibir os detalhes do produto na página
-function displayProductDetails(product) {
-    const productDetailsContainer = $('#product-details');
-    const productDetailsHTML = `
-        <p><strong>Nome:</strong> ${product.name}</p>
-        <p><strong>Categoria:</strong> ${product.category}</p>
-        <p><strong>Descrição:</strong> ${product.description || 'N/A'}</p>
-        <p><strong>Preço:</strong> $${product.price.toFixed(2)}</p>
-        <img src="${product.image || 'https://via.placeholder.com/150'}" alt="Imagem do Produto">
-    `;
-    productDetailsContainer.html(productDetailsHTML);
+// Lógica para adicionar uma nova categoria
+$('#addCategoryForm').submit(function (e) {
+    e.preventDefault();
 
-    // Exibir o contêiner de detalhes do produto
-    $('#product-details-container').show();
-}
+    const categoryName = $('#categoryName').val();
+
+    if (categoryName.trim() !== "") {
+        const newCategory = { name: categoryName };
+        const categoriesRef = database.ref('categories');
+        categoriesRef.push(newCategory);
+
+        // Limpar o formulário e fechar o modal
+        $(this)[0].reset();
+        $('#addCategoryModal').modal('hide');
+
+        // Recarregar a lista de categorias
+        loadCategoryList();
+    }
+});
 
 // Lógica para adicionar um novo produto
 $('#addProductForm').submit(function (e) {
@@ -61,17 +64,19 @@ $('#addProductForm').submit(function (e) {
     const productPrice = parseFloat($('#productPrice').val());
     const productImage = $('#productImage').val();
 
-    const newProduct = {
-        name: productName,
-        category: productCategory,
-        description: productDescription,
-        price: productPrice,
-        image: productImage
-    };
+    if (productName.trim() !== "" && productCategory.trim() !== "") {
+        const newProduct = {
+            name: productName,
+            category: productCategory,
+            description: productDescription,
+            price: productPrice,
+            image: productImage
+        };
 
-    addOrUpdateProduct(newProduct);
+        addOrUpdateProduct(newProduct);
 
-    // Limpar o formulário e fechar o modal
-    $(this)[0].reset();
-    $('#addProductModal').modal('hide');
+        // Limpar o formulário e fechar o modal
+        $(this)[0].reset();
+        $('#addProductModal').modal('hide');
+    }
 });
