@@ -1,3 +1,8 @@
+const firebase = require('firebase/app');
+require('firebase/auth');
+require('firebase/database');
+require('firebase/storage');
+
 // Configurar as credenciais do Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyCLEyAd_4-2n2ID0xTjwS1ouip9G9C6JDs",
