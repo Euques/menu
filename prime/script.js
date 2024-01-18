@@ -40,10 +40,9 @@ function loadCategoryList() {
     });
 }
 
-// Lógica para exibir a lista de categorias na página
 function displayCategoryList(categories) {
     const categoryListContainer = $('#category-list');
-    const categoryHTML = '<ul class="list-group">';
+    let categoryHTML = '<ul class="list-group">';
     categories.forEach(category => {
         categoryHTML += `<li class="list-group-item">${category.name}</li>`;
     });
@@ -58,6 +57,8 @@ function displayCategoryList(categories) {
         categorySelect.append(`<option value="${category.name}">${category.name}</option>`);
     });
 }
+
+
 
 // Lógica para adicionar uma nova categoria
 $('#addCategoryForm').submit(function (e) {
